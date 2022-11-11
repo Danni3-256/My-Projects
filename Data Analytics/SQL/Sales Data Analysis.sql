@@ -1,0 +1,109 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT *
+  FROM [salesData_db].[dbo].[Sales]
+
+
+-- UNIQUE VALUES --
+SELECT DISTINCT STATUS FROM [salesData_db].[dbo].[Sales]
+SELECT DISTINCT YEAR_ID FROM [salesData_db].[dbo].[Sales]
+SELECT DISTINCT PRODUCTLINE FROM [salesData_db].[dbo].[Sales]
+SELECT DISTINCT COUNTRY FROM [salesData_db].[dbo].[Sales]
+SELECT DISTINCT DEALSIZE FROM [salesData_db].[dbo].[Sales]
+SELECT DISTINCT TERRITORY FROM [salesData_db].[dbo].[Sales]
+
+-- GROUP SALES BY PRODUCT LINE, DEAL SIZE -- AND YEAR
+SELECT PRODUCTLINE, SUM(SALES) REVENUE
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY PRODUCTLINE
+ORDER BY 2 DESC
+
+SELECT YEAR_ID, SUM(SALES) REVENUE
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY YEAR_ID
+ORDER BY 2 DESC
+
+-- WHAT HAPPENED 2005 ??
+SELECT DISTINCT MONTH_ID
+FROM [salesData_db].[dbo].[Sales]
+WHERE YEAR_ID = 2005
+-- Turns out they only operated in the first 5 months of 2005
+
+SELECT DEALSIZE, SUM(SALES) REVENUE
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY DEALSIZE
+ORDER BY 2 DESC
+
+-- MONTHLY SALES ANALYSIS -- - -
+SELECT MONTH_ID, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY MONTH_ID
+ORDER BY 2 DESC
+
+-- 2003 --
+SELECT MONTH_ID, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+WHERE YEAR_ID = 2003
+GROUP BY MONTH_ID
+ORDER BY 2 DESC
+
+-- 2004 -- 
+SELECT MONTH_ID, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+WHERE YEAR_ID = 2004
+GROUP BY MONTH_ID
+ORDER BY 2 DESC
+
+-- ANALYSIS FOR MONTHLY SALES AND PRODUCT LINE
+SELECT MONTH_ID, PRODUCTLINE, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY MONTH_ID, PRODUCTLINE
+ORDER BY 3 DESC
+
+-- NOVEMBER SALES ANALYSIS
+SELECT MONTH_ID, PRODUCTLINE, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+WHERE MONTH_ID = 11
+GROUP BY MONTH_ID, PRODUCTLINE
+ORDER BY 3 DESC
+
+-- 2003 NOVEMBER SALES ANALYSIS VS 2004 NOVEMBER SALES ANALYSIS
+SELECT MONTH_ID, PRODUCTLINE, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+WHERE MONTH_ID = 11 AND YEAR_ID = 2003
+GROUP BY MONTH_ID, PRODUCTLINE
+ORDER BY 3 DESC
+
+SELECT MONTH_ID, PRODUCTLINE, SUM(SALES) REVENUE, COUNT(ORDERNUMBER) Frequency
+FROM [salesData_db].[dbo].[Sales]
+WHERE MONTH_ID = 11 AND YEAR_ID = 2004
+GROUP BY MONTH_ID, PRODUCTLINE
+ORDER BY 3 DESC
+
+-- RFM ANALYSIS FOR BEST CUSTOMER -- (INDEXING TECHNIQUE)
+
+-- RECENCY - How long ago their purchase was - (Last order date)
+-- FREQUENCY - How often do they purchase - (count of order number)
+-- MONETARY - How much they spent - (Total spent)
+
+DROP TABLE IF EXISTS #rfm
+; WITH rfm AS (
+SELECT CUSTOMERNAME, SUM(SALES) MonetaryValue, AVG(SALES) AvgMonetaryValue, COUNT(ORDERNUMBER) Frequency, MAX(ORDERDATE) LastOrderDate,
+(SELECT MAX(ORDERDATE) FROM [salesData_db].[dbo].[Sales]) AS MaxOrderDate, 
+DATEDIFF(DD,MAX(ORDERDATE),(SELECT MAX(ORDERDATE) FROM [salesData_db].[dbo].[Sales])) AS Recency
+FROM [salesData_db].[dbo].[Sales]
+GROUP BY CUSTOMERNAME
+), 
+rfm_calc AS (
+SELECT r.*,
+	NTILE(4) OVER (ORDER BY Recency DESC) rfm_recency,
+	NTILE(4) OVER (ORDER BY Frequency DESC) rfm_frequency,
+	NTILE(4) OVER (ORDER BY MonetaryValue DESC) rfm_monetary
+FROM rfm r
+) 
+SELECT 
+	c.*, rfm_recency + rfm_frequency + rfm_monetary AS rfm_cell,
+	CAST(rfm_recency AS VARCHAR) + CAST(rfm_frequency AS VARCHAR) + CAST(rfm_monetary AS VARCHAR) rfmCellString
+	INTO #rfm
+FROM rfm_calc c
+
+SELECT * FROM #rfm

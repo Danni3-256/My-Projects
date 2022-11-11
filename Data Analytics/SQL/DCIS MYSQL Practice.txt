@@ -1,0 +1,56 @@
+1. CREATE DATABASE company;
+2. USE company;
+3. mysql> CREATE TABLE employee(
+    -> empid INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    -> first_name VARCHAR(25),
+    -> last_name VARCHAR(25),
+    -> salary INT,
+    -> joining_date DATETIME,
+    -> department VARCHAR(25));
+4. mysql> CREATE TABLE designation(
+    -> emp_ref_id INT,
+    -> designation VARCHAR(25),
+    -> designation_date DATETIME,
+    -> FOREIGN KEY(emp_ref_id) REFERENCES employee(empid));
+5. mysql> CREATE TABLE bonus(
+    -> emp_ref_id INT,
+    -> bonus_amt INT,
+    -> bonus_date DATETIME,
+    -> FOREIGN KEY(emp_ref_id) REFERENCES employee(empid));
+6. mysql> INSERT INTO employee(empid, first_name, last_name, salary, joining_date, department) VALUES(0001,'Banx','Ranx',500000,'20-11-01 09.00.00','Accounts'),(0002,'Thomas','Shelby',750000,'20-08-14 11.00.00','IT'),(0003,'Peter','Parker','850000','21-01-01 08.00.00','HR'),(0004,'Dannie','Frost',800000,'18-06-06 10.00.00','Data Analytics');
+
+7. mysql> INSERT INTO designation(emp_ref_id, designation, designation_date) VALUES(0001, 'Manager', '22-01-01 09.00.00'),(0002,'Executive','22-12-01 12.00.00'),(0003,'HR','22-01-01 08.00.00'),(0004,'Executive','22-10-10 12.00.00');
+
+8. mysql> INSERT INTO bonus(emp_ref_id, bonus_amt, bonus_date) VALUES(0001, 100000, '21-01-01 09.00.00'),(0002, 89000, '21-01-01 09.00.00'),(0003, 120000, '21-01-01 09.00.00'),(0004, 150000, '21-01-01 09.00.00');
+
+9. mysql> SELECT * FROM employee;
++-------+------------+-----------+--------+---------------------+----------------+
+| empid | first_name | last_name | salary | joining_date        | department     |
++-------+------------+-----------+--------+---------------------+----------------+
+|     1 | Banx       | Ranx      | 500000 | 2020-11-01 09:00:00 | Accounts       |
+|     2 | Thomas     | Shelby    | 750000 | 2020-08-14 11:00:00 | IT             |
+|     3 | Peter      | Parker    | 850000 | 2021-01-01 08:00:00 | HR             |
+|     4 | Dannie     | Frost     | 800000 | 2018-06-06 10:00:00 | Data Analytics |
++-------+------------+-----------+--------+---------------------+----------------+
+4 rows in set (0.04 sec)
+
+mysql> SELECT * FROM designation;
++------------+-------------+---------------------+
+| emp_ref_id | designation | designation_date    |
++------------+-------------+---------------------+
+|          1 | Manager     | 2022-01-01 09:00:00 |
+|          2 | Executive   | 2022-12-01 12:00:00 |
+|          3 | HR          | 2022-01-01 08:00:00 |
+|          4 | Executive   | 2022-10-10 12:00:00 |
++------------+-------------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM bonus;
++------------+-----------+---------------------+
+| emp_ref_id | bonus_amt | bonus_date          |
++------------+-----------+---------------------+
+|          1 |    100000 | 2021-01-01 09:00:00 |
+|          2 |     89000 | 2021-01-01 09:00:00 |
+|          3 |    120000 | 2021-01-01 09:00:00 |
+|          4 |    150000 | 2021-01-01 09:00:00 |
++------------+-----------+---------------------+

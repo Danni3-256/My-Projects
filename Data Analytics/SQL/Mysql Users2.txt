@@ -1,0 +1,333 @@
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mtac               |
+| mysql              |
+| practice           |
+| time_table         |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> USE practice;
+Database changed
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_practice |
++--------------------+
+| practice_tutorial  |
+| users              |
++--------------------+
+2 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Users2(
+    -> id INT AUTO_INCREMENT,
+    -> first_name VARCHAR(100),
+    -> last_name VARCHAR(100),
+    -> email VARCHAR(75),
+    -> password VARCHAR(255),
+    -> location VARCHAR(100),
+    -> is_admin TINYINT(1),
+    -> register_date DATETIME,
+    -> PRIMARY KEY(id)
+    -> );
+Query OK, 0 rows affected (0.35 sec)
+
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_practice |
++--------------------+
+| practice_tutorial  |
+| users              |
+| users2             |
++--------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from users2;
+Empty set (0.05 sec)
+
+mysql> insert into users2(first_name, last_name, email, password, location, is_admin, register_date)
+    -> values ('John', 'Doe', 'johndoe@gmail.com', '123456', 'Bulabira', 1, now());
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into users2(first_name, last_name, email, password, location, is_admin, register_date)
+    -> values ('dan', 'okia', 'danokia@gmail.com', 'dan256', 'Najjera', 0, now()), ('Pato', 'shaeks', 'patoshaeks@gmail.com', 'pato256', 'Ntinda', 1, now()), ('jo', 'oma', 'omajo@gmail.com', 'oma256', 'busibante', 0, now());
+Query OK, 3 rows affected (0.09 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+
+| id | first_name | last_name | email                | password | location  | is_admin | register_date       |
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+
+|  1 | John       | Doe       | johndoe@gmail.com    | 123456   | Bulabira  |        1 | 2022-02-22 18:40:20 |
+|  2 | dan        | okia      | danokia@gmail.com    | dan256   | Najjera   |        0 | 2022-02-22 18:48:47 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256  | Ntinda    |        1 | 2022-02-22 18:48:47 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256   | busibante |        0 | 2022-02-22 18:48:47 |
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> insert into users2(first_name, last_name, email, password, location, is_admin, register_date)
+    -> values ('brayo', 'manze', 'manzebrayo@gmail.com', 'streetboy', 'Ku street', 1, now());
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+| id | first_name | last_name | email                | password  | location  | is_admin | register_date       |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+|  1 | John       | Doe       | johndoe@gmail.com    | 123456    | Bulabira  |        1 | 2022-02-22 18:40:20 |
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera   |        0 | 2022-02-22 18:48:47 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda    |        1 | 2022-02-22 18:48:47 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante |        0 | 2022-02-22 18:48:47 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Ku street |        1 | 2022-02-22 18:51:37 |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+5 rows in set (0.04 sec)
+
+mysql> select * from users2 where is_admin = 1 and register_date = now;
+ERROR 1054 (42S22): Unknown column 'now' in 'where clause'
+mysql> select * from users2 where is_admin = 1 and register_date = now();
+Empty set (0.06 sec)
+
+mysql> select * from users2 where is_admin = 1;
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+| id | first_name | last_name | email                | password  | location  | is_admin | register_date       |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+|  1 | John       | Doe       | johndoe@gmail.com    | 123456    | Bulabira  |        1 | 2022-02-22 18:40:20 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda    |        1 | 2022-02-22 18:48:47 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Ku street |        1 | 2022-02-22 18:51:37 |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from users2 where is_admin = 1 and location = 'Ntinda';
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+
+| id | first_name | last_name | email                | password | location | is_admin | register_date       |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256  | Ntinda   |        1 | 2022-02-22 18:48:47 |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from users2 where is_admin > 0;
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+| id | first_name | last_name | email                | password  | location  | is_admin | register_date       |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+|  1 | John       | Doe       | johndoe@gmail.com    | 123456    | Bulabira  |        1 | 2022-02-22 18:40:20 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda    |        1 | 2022-02-22 18:48:47 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Ku street |        1 | 2022-02-22 18:51:37 |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from users2 where id = 1;
+Query OK, 1 row affected (0.12 sec)
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+| id | first_name | last_name | email                | password  | location  | is_admin | register_date       |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera   |        0 | 2022-02-22 18:48:47 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda    |        1 | 2022-02-22 18:48:47 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante |        0 | 2022-02-22 18:48:47 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Ku street |        1 | 2022-02-22 18:51:37 |
++----+------------+-----------+----------------------+-----------+-----------+----------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> update users2 set location = 'Bulabira Road' where id = 5;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+
+4 rows in set (0.00 sec)
+
+mysql> alter table users2 add occupation varchar(20);
+Query OK, 4 rows affected (0.35 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 | NULL       |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 | NULL       |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 | NULL       |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | NULL       |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> update table users2 set occupation = 'Data Analyst' where id = 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table users2 set occupation = 'Data Analyst' where id = 2' at line 1
+mysql> update users2 set occupation = 'Data Analyst' where id = 2;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set occupation = 'mathematician' where id = 3,
+    -> update users2 set occupation = 'Developer' where id = 4,
+    -> update users2 set occupation = 'Developer' where id = 5;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '
+update users2 set occupation = 'Developer' where id = 4,
+update users2 set occu' at line 1
+mysql> update users2 set occupation = 'Developer' where id = 5;
+Query OK, 1 row affected (0.11 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set occupation = 'Developer' where id = 4;
+Query OK, 1 row affected (0.09 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set occupation = 'Mathematician' where id = 3;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation    |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 | Data Analyst  |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 | Mathematician |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 | Developer     |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | Developer     |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> alter table users2 add Age INT(3);
+Query OK, 4 rows affected (0.32 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM users2;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 | Data Analyst  | NULL |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 | Mathematician | NULL |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 | Developer     | NULL |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | Developer     | NULL |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from users2 ORDER BY first_name ASC;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | Developer     | NULL |
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 | Data Analyst  | NULL |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 | Developer     | NULL |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 | Mathematician | NULL |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+4 rows in set (0.06 sec)
+
+mysql> SELECT CONCAT(first_name, ' ',last_name) as 'Name' email, occupation from users2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'email, occupation from users2' at line 1
+mysql> SELECT CONCAT(first_name, ' ',last_name) as 'Name' email and occupation from users2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'email and occupation from users2' at line 1
+mysql> SELECT CONCAT(first_name, ' ',last_name) as 'Name', email and occupation from users2;
++-------------+----------------------+
+| Name        | email and occupation |
++-------------+----------------------+
+| dan okia    |                    0 |
+| Pato shaeks |                    0 |
+| jo oma      |                    0 |
+| brayo manze |                    0 |
++-------------+----------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT CONCAT(first_name, ' ',last_name) as 'Name', email from users2;
++-------------+----------------------+
+| Name        | email                |
++-------------+----------------------+
+| dan okia    | danokia@gmail.com    |
+| Pato shaeks | patoshaeks@gmail.com |
+| jo oma      | omajo@gmail.com      |
+| brayo manze | manzebrayo@gmail.com |
++-------------+----------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT CONCAT(first_name, ' ',last_name) as 'Name', occupation from users2;
++-------------+---------------+
+| Name        | occupation    |
++-------------+---------------+
+| dan okia    | Data Analyst  |
+| Pato shaeks | Mathematician |
+| jo oma      | Developer     |
+| brayo manze | Developer     |
++-------------+---------------+
+4 rows in set (0.00 sec)
+
+mysql> select distinct occupation from users2;
++---------------+
+| occupation    |
++---------------+
+| Data Analyst  |
+| Mathematician |
+| Developer     |
++---------------+
+3 rows in set (0.05 sec)
+
+mysql> update users2 set Age = 25 where id = 2;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set Age = 20 where id = 3;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set Age = 23 where id = 4;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update users2 set Age = 30 where id =5;
+Query OK, 1 row affected (0.07 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from users2;
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256    | Najjera       |        0 | 2022-02-22 18:48:47 | Data Analyst  |   25 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256   | Ntinda        |        1 | 2022-02-22 18:48:47 | Mathematician |   20 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256    | busibante     |        0 | 2022-02-22 18:48:47 | Developer     |   23 |
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | Developer     |   30 |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+---------------+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from users2 where Age BETWEEN 20 AND 25;
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password | location  | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+---------------+------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256   | Najjera   |        0 | 2022-02-22 18:48:47 | Data Analyst  |   25 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256  | Ntinda    |        1 | 2022-02-22 18:48:47 | Mathematician |   20 |
+|  4 | jo         | oma       | omajo@gmail.com      | oma256   | busibante |        0 | 2022-02-22 18:48:47 | Developer     |   23 |
++----+------------+-----------+----------------------+----------+-----------+----------+---------------------+---------------+------+
+3 rows in set (0.05 sec)
+
+mysql> select * from users2 where location LIKE 'N%';
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password | location | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256   | Najjera  |        0 | 2022-02-22 18:48:47 | Data Analyst  |   25 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256  | Ntinda   |        1 | 2022-02-22 18:48:47 | Mathematician |   20 |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from users2 where location LIKE '%d';
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+------+
+| id | first_name | last_name | email                | password  | location      | is_admin | register_date       | occupation | Age  |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+------+
+|  5 | brayo      | manze     | manzebrayo@gmail.com | streetboy | Bulabira Road |        1 | 2022-02-22 18:51:37 | Developer  |   30 |
++----+------------+-----------+----------------------+-----------+---------------+----------+---------------------+------------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from users2 where occupation IN('Data Analyst', 'Mathematician');
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+| id | first_name | last_name | email                | password | location | is_admin | register_date       | occupation    | Age  |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+|  2 | dan        | okia      | danokia@gmail.com    | dan256   | Najjera  |        0 | 2022-02-22 18:48:47 | Data Analyst  |   25 |
+|  3 | Pato       | shaeks    | patoshaeks@gmail.com | pato256  | Ntinda   |        1 | 2022-02-22 18:48:47 | Mathematician |   20 |
++----+------------+-----------+----------------------+----------+----------+----------+---------------------+---------------+------+
+2 rows in set (0.00 sec)
